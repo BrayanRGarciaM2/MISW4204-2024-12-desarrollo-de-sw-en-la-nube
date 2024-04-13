@@ -4,8 +4,8 @@ Flask-JWT-Extended==4.6.0
 Flask-RESTful==0.3.10
 Flask-SQLAlchemy==2.5.1
 Flask-Marshmallow==1.2.1
-SQLAlchemy==2.0.29
-SQLAlchemy-Utils==0.41.2
+marshmallow==3.21.1
+marshmallow-sqlalchemy==1.0.0
 Celery==5.3.6
 Redis==5.0.3
 Werkzeug==3.0.2
