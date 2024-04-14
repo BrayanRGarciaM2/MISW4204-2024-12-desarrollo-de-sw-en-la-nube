@@ -9,7 +9,6 @@ from modelos.modelos import UsuarioSchema, Usuario, db
 
 usuario_schema = UsuarioSchema()
 
-
 class VistaSignIn(Resource):
 
     def post(self):
