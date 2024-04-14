@@ -5,6 +5,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 
 import os
+import time
 
 from modelos.modelos import Tareas, TareasSchema, db, StatusEnum
 
@@ -15,21 +16,7 @@ from datetime import datetime
 tareas_schema = TareasSchema()
 
 
-celery = Celery('task', backend='redis://redis:6379/0', broker='redis://redis:6379/0')
-
-@celery.task
-def editVideo(url):
-    os.system('youtube-dl '+url)
-    """ respuesta = requests.get(url)
-    
-    if respuesta.status_code == 200:
-        with open('/usr/src/app/video_descargado.mp4', 'wb') as archivo:
-            archivo.write(respuesta.content)
-    else:
-        print("No se pudo descargar el video. Código de estado:", respuesta.status_code)
- """
-    
-
+celery = Celery('tasks', backend='redis://redis:6379/0', broker='redis://redis:6379/0')    
 
 class VistaTareas(Resource):
 
@@ -51,9 +38,10 @@ class VistaTareas(Resource):
         else:
             return tareas_schema.dump(tareas, many=True), 200
         
-    @jwt_required()
     def post(self):
-        try:
+        task = celery.send_task('tasks.test', args=[1, 2])
+        return "Hello world"
+        """ try:
             fileName = request.json['fileName']
             result = editVideo(fileName)
             tarea = tareas_schema.load({"id":result.id}, session=db.session)
@@ -64,4 +52,4 @@ class VistaTareas(Resource):
         except exc.IntegrityError as e:
             db.session.rollback()
             return {'mensaje': 'Hubo un error creando la tarea. Revise los datos proporcionados'}, 400
-        return tareas_schema.dump(tarea), 201
+        return tareas_schema.dump(tarea), 201 """

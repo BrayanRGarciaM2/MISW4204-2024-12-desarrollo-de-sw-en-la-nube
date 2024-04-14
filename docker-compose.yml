@@ -39,5 +39,11 @@ services:
     image: 'redis'
     ports:
       - "6379:6379"
+  worker:
+    build:
+      context: ./celery
+    command: celery -A tasks worker -l info -E
+    depends_on:
+      - redis
   
   
