@@ -18,6 +18,7 @@ class Usuario(db.Model):
 
 class Tareas(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
+    id_task = db.Column(db.Text, unique=True)
     status = db.Column(db.Enum(StatusEnum), default=StatusEnum.UPLOADED, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.now)
     result = db.Column(db.Text, default="NULL", nullable=True)
