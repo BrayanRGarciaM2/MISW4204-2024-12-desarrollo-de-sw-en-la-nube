@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from modelos.modelos import db, Usuario
-from vistas import VistaSignIn
+from vistas.VistaSignIn import VistaSignIn
 
 
 def create_flask_app():
@@ -35,3 +35,4 @@ def add_urls(app):
 
 app = create_flask_app()
 db.init_app(app)
+db.create_all()

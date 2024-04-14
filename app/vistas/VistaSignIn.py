@@ -5,21 +5,12 @@ from flask import request
 from flask_jwt_extended import create_access_token, current_user, jwt_required
 from flask_restful import Resource
 
-from app.modelos.modelos import UsuarioSchema, Usuario, db
+from modelos.modelos import UsuarioSchema, Usuario, db
 
 usuario_schema = UsuarioSchema()
 
 
 class VistaSignIn(Resource):
-
-    def validar_email(self, email):
-        # Patrón para validar el email
-        patron = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
-
-        if re.match(patron, email):
-            return True
-        else:
-            return False
 
     def post(self):
         if request.json["password1"] != request.json["password2"]:
@@ -35,6 +26,15 @@ class VistaSignIn(Resource):
             return {"mensaje": "Ya existe un usuario con este identificador"}, 400
         token_de_acceso = create_access_token(identity=nuevo_usuario.id)
         return {"mensaje": "usuario creado", "token": token_de_acceso, "id": nuevo_usuario.id}, 201
+
+    def validar_email(self, email):
+        # Patrón para validar el email
+        patron = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
+
+        if re.match(patron, email):
+            return True
+        else:
+            return False
 
     @jwt_required()
     def put(self, id_usuario):
