@@ -1,0 +1,21 @@
+{
+	"id": "83ee1c1a-2ab3-4e65-81f9-9e4f3b50db90",
+	"name": "MISW4204-2024-12-desarrollo-de-sw-en-la-nube",
+	"values": [
+		{
+			"key": "token",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "enviroment",
+			"value": "http://localhost:1337",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-04-15T04:03:23.031Z",
+	"_postman_exported_using": "Postman/10.24.3"
+}

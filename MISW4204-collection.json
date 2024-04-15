@@ -1,0 +1,282 @@
+{
+	"info": {
+		"_postman_id": "34ec298b-9499-4ad1-b153-7dc0fe4d5a1c",
+		"name": "MISW4204-2024-12-desarrollo-de-sw-en-la-nube",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5428198"
+	},
+	"item": [
+		{
+			"name": "Local",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "signup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();\r",
+											"pm.environment.set('token', response.token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"usuario123\",\r\n    \"password1\": \"123456\",\r\n    \"password2\": \"123456\",\r\n    \"email\": \"usuario123@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{enviroment}}/api/auth/signup",
+									"host": [
+										"{{enviroment}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								},
+								"description": "| Endpoint | **/api/auth/signup** |\n| --- | --- |\n| Descripción | Permite **crear** una **cuenta** con los campos para nombre de **usuario**, **correo electrónico** y  <br>**contraseña**. **El nombre y el correo electrónico** deben ser únicos en la plataforma,  <br>mientras que la contraseña debe seguir unos lineamientos mínimos de seguridad.  <br>Adicionalmente, la clave debe ser solicitada dos veces para que el usuario confirme que  <br>la ingresa de forma correcta. |\n\n| Retorno | application/json, con un mensaje que notifique si la cuenta pudo o no ser creada. |\n| --- | --- |\n| Parámetros del  <br>Endpoint | username (String)  <br>password1 (String)  <br>password2 (String)  <br>email (String) |"
+							},
+							"response": []
+						},
+						{
+							"name": "login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();\r",
+											"pm.environment.set('token', response.token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"usuario123\",\r\n    \"password\": \"123456\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{enviroment}}/api/auth/login",
+									"host": [
+										"{{enviroment}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								},
+								"description": "| Endpoint | /api/auth/login |\n| --- | --- |\n| Descripción | Permite **recuperar** el **token** de autorización para consumir los recursos del API  <br>suministrando el nombre de usuario y la contraseña de una cuenta previamente  <br>registrada. |\n\n| Retorno | Un token de autorización |\n| --- | --- |\n| Parámetros del  <br>Endpoint | username (String)  <br>password (String) |"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{enviroment}}/api/tasks",
+							"host": [
+								"{{enviroment}}"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						},
+						"description": "| Endpoint | /api/tasks |\n| --- | --- |\n| Descripción | Permite recuperar **todas** las **tareas** de edición de un usuario autorizado en la aplicación. |\n\n| Retorno | **Diccionario de todas las tareas de edición de un usuario.** |\n| --- | --- |\n| Parámetros del  <br>Endpoint | Ninguno |\n\n|  |  |\n| --- | --- |\n| Parámetros de  <br>autorización | Bearer Token. |"
+					},
+					"response": []
+				},
+				{
+					"name": "task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"filename\": \"https://www.youtube.com/watch?v=T1-YlalX_1s&ab_channel=JStedward515\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{enviroment}}/api/tasks",
+							"host": [
+								"{{enviroment}}"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						},
+						"description": "| Endpoint | /api/tasks |\n| --- | --- |\n| Descripción | Permite crear una nueva tarea de edición de video. El usuario requiere autorización. |\n\n| Retorno | Retorna un mensaje de confirmación indicando que la tarea fue creada. |\n| --- | --- |\n| Parámetros del  <br>Endpoint | **filename (File)**. Ruta del video a subir a la aplicación  <br>Los campos **id, timeStamp, y status** se generan de forma automática en la aplicación. El  <br>**ID** es un campo único y auto-numérico. Por su lado, el **TimeStamp** señala la fecha y hora  <br>de carga del archivo. Finalmente, el **status** corresponde a la notificación en la aplicación  <br>para indicar si el video ya fue procesado o no. Para los archivos cargados su estado por  <br>defecto es uploaded, en el momento de culminar la edición este atributo cambia a  <br>processed. |\n\n|  |  |\n| --- | --- |\n| Parámetros de  <br>autorización | Bearer Token. |"
+					},
+					"response": []
+				},
+				{
+					"name": "task/id_task",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{enviroment}}/api/tasks/1",
+							"host": [
+								"{{enviroment}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"1"
+							]
+						},
+						"description": "| Endpoint | task/id_task |\n| --- | --- |\n| Descripción | Permite recuperar la **información de una tarea** en la aplicación. **El usuario requiere  <br>autorización**. |\n\n| Retorno | Retorna un mensaje de confirmación indicando que la tarea fue creada. |\n| --- | --- |\n| Parámetros del  <br>Endpoint | Ninguno |\n\n|  |  |\n| --- | --- |\n| Parámetros de  <br>autorización | Bearer Token. |"
+					},
+					"response": []
+				},
+				{
+					"name": "task/id_task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{enviroment}}/api/tasks/1",
+							"host": [
+								"{{enviroment}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"1"
+							]
+						},
+						"description": "| Endpoint | task/id_task |\n| --- | --- |\n| Descripción | Permite **eliminar** una **tarea** en la aplicación. El usuario requiere **autorización**. |\n\n| Retorno | Ninguno |\n| --- | --- |\n| Parámetros del  <br>Endpoint | Ninguno |\n\n|  |  |\n| --- | --- |\n| Parámetros de  <br>autorización | Bearer Token. |"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Desarrollo",
+			"item": []
+		}
+	]
+}
