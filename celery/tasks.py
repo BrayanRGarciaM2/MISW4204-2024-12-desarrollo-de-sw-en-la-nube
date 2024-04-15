@@ -81,7 +81,7 @@ def trim_video(video):
     input_path = video
     output_path = f"/usr/src/app/videos/temporal.mp4"
     start_time = '00:00:00'
-    duration = '18'
+    duration = '20'
 
     # Llamar al script de shell desde Python
     try:
@@ -96,8 +96,6 @@ def trim_video(video):
 
 @celery.task(name='tasks.edit')
 def editVideo(url):
-    # os.system('youtube-dl '+url)
-    duracion_segundos = 20
 
 
     yt = pytube.YouTube(url)
