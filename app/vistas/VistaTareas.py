@@ -9,6 +9,8 @@ import asyncio
 
 from celery import Celery
 
+import asyncio
+
 tareas_schema = TareasSchema()
 
 
