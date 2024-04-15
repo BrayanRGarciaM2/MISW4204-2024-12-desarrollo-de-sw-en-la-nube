@@ -4,8 +4,9 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 from modelos.modelos import Tareas, TareasSchema, db
 from sqlalchemy import exc
-
 from celery import Celery
+
+import asyncio
 
 tareas_schema = TareasSchema()
 
