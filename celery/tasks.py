@@ -57,3 +57,5 @@ def editVideo(url):
     # Combina el audio y el video recortados y guarda el archivo final.
     video_final = video_recortado.set_audio(audio_recortado)
     video_final.write_videofile(id_unico + '.mp4')
+
+    return ruta_completa + '/' + id_unico + '.mp4'

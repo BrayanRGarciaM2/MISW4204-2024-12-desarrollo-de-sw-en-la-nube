@@ -7,6 +7,7 @@ from modelos.modelos import db, Usuario
 from vistas.VistaSignIn import VistaSignIn
 from vistas.VistaLogin import VistaLogin
 from vistas.VistaTareas import VistaTareas
+from vistas.VistaTarea import VistaTarea
 
 
 def create_flask_app():
@@ -36,6 +37,7 @@ def add_urls(app):
     api.add_resource(VistaSignIn, '/api/auth/signup')
     api.add_resource(VistaLogin, '/api/auth/login')
     api.add_resource(VistaTareas, '/api/tasks')
+    api.add_resource(VistaTarea, '/api/tasks/<int:id_task>')
 
 app = create_flask_app()
 db.init_app(app)
