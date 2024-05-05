@@ -8,13 +8,10 @@ import pytube
 
 from google.cloud import storage
 from celery import Celery
+from google.auth.exceptions import DefaultCredentialsError
+
 
 celery = Celery('tasks', backend='redis://redis:6379/0', broker='redis://redis:6379/0')
-
-client = storage.Client()
-bucket_name = 'videos-bucket-idrl'
-
-bucket = client.bucket(bucket_name)
 
 def generar_id_unico():
     """
@@ -43,6 +40,9 @@ def edit_ratio(video):
     try:
         subprocess.run(['./adjust_video.sh', input_path, output_path, width, height])        
         os.replace(output_path, input_path)
+        fileName = obtener_nombre_archivo(input_path)
+        blob = bucket.blob(fileName)
+        blob.upload_from_filename(fileName)
     except subprocess.CalledProcessError as e:
         # Si hay un error, asegúrate de eliminar el archivo temporal
         if os.path.exists(output_path):
@@ -98,16 +98,28 @@ def editVideo(url):
 
     original_file_name = id_unico + '.mp4'
 
-    blob = bucket.blob(original_file_name)
-    blob.upload_from_filename(video)
+    try:
+        client = storage.Client()
+        bucket_name = 'videos-bucket-idrl'
 
-    trim_video(video_src)
-    edit_ratio(video_src)   
+        bucket = client.bucket(bucket_name)
 
-    edit_file_name = id_unico + '_Edited.mp4'
+        blob = bucket.blob(original_file_name)
+        blob.upload_from_filename(video)
 
-    blob = bucket.blob(edit_file_name)
-    blob.upload_from_filename(edit_file_name)
+        trim_video(video_src)
+        edit_ratio(video_src)   
+
+        edit_file_name = id_unico + '_Edited.mp4'
+
+        blob = bucket.blob(edit_file_name)
+        blob.upload_from_filename(edit_file_name)
+
+    except DefaultCredentialsError as e:
+        print("Error de autenticación: las credenciales predeterminadas son inválidas o no están configuradas correctamente.")
+    # Realizar acciones para solucionar el problema, como proporcionar nuevas credenciales
+    except Exception as e:
+        print("Se produjo un error durante la autenticación:", e)
     
 
   
