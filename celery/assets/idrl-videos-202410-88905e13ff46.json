@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "idrl-videos-202410",
+  "private_key_id": "88905e13ff469e44422e6facae2e7704700c6f9a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDSCDddmCpHdGFU\npOgpJi/02if8LTbGa4v6Ewa2teBGNYujfarubvQgW7CyigIruu0VOScHR9PV+yD3\nUrE2REiHIQXEqp8gHrHG+hCcMxpvaLokENTRveb0yASkD8WF5IImh/Xy4PCLRX9L\n1rjiyy2rFyqSXipETxYhRal0Hihd8x3W+Ashj4d6ufsls6OTi+aOZFqoEnTZmuFe\nRPjYPGUadClwtLx4RWr6F4AOWF4ZNBed4pjF+sXDsdOiB08+6Di3g0Ng0RclTD0X\nYeCShPimdN/N+qJNAQOnQBgvdCYAIamA4YiKdQSacb0dJKXph2gkyjPQTnQknC3e\n19x4M6Z9AgMBAAECggEALggt9j3g2ktH/7Cqz0X20b+0bsEMFb3BbnwYBxhigJDA\nu4LR4TMBH0xpNCAqLKJpzrJ5es+DvoytI3eErmOVz8PtizZn7La9eOIanNlYbF10\nGm5z7kokIbbqyXhJbrhvy/kVbvdc0PFY3mq/l7k3F53arzyjH9iDfaRSaMgpSbmW\nvrptVCvboVnXGrabDm1ULHjrpf0+RWSsAahD1I/s+DOX5bGObu3mCyfdwzRh4GYT\nY1f+Po6pRDBrxZTz4QZ3mbaG9EKdqdOSVWEbFeN3NE3B0gBnp8oOGCwBosAYjASF\nvbXzIX4KhtDuCi1dsG+XRkivRadrTd9cx0i5/SqCIwKBgQDtuYr8JdPQceKAguIC\n1RKy5G4uWVIdw938yxHUrfvoohFsOrzgr+te92NESmAWzzeJvXvq41jqaRYkLuXi\ng00X4Ybhp35eFWfh0Migl5RImjtCIiX6RUnkbTIN9kiPCdWhfi5fvsgBIhd+8IGZ\nyqHt4pYSD8TS0Ys3WMkbcNuLFwKBgQDiLa1vHBQe0Fo2EfWEvlwRgn/6Xotdn54E\nMiqxg1gi/yuw70Gm9u0WNpaYaG/+ajPPJUn3AxATv5k8QoqLk2r+wVOoYwXs1rrI\nGoYHS1/P6Q+huKjBcTSkZ54PzmXSJm040IZa80+e9cqOiUFsq9FHyUaPTcNnbinA\nhHrvOkqHiwKBgQCcA/BeKWlI3OUdGEjCORqLg3V4P7CvzjMrTA7IuOKhu3OZxzbc\nczgS3GMul21Wquo1IMFp14ksVolsd8bxkOCQsrd18xnxHzVNM1voYXK071vCvGyW\nQtEK9EssdJ0MGxU0Zn6C4c+bRseKzMcRqrX5TILXGbg/77vhOAjMVJYRQwKBgQCi\nzuyECXs2PxZgy4am+fv+IqkKyVmamBY/wPjYdMpRzspdf6wLir1Y+wxmQu8y/LG0\nj4vxgcPl40pjhSaDmCcxoGoe0MDoHh2vguAtigU6/PHioLDhJiMVoPy3NgQ3RK/k\ncL315CTRMO6QsZ5lojxwZyMiboCVCEiHqxVu9M/HRwKBgHg2tPTFQ1fwMaplgej/\nL4G3w85UD+b5denXGvb46u6bX84D+Met5yazT9bGyfqt6zOa0Rxq/Uv4YOmmlYqs\nj0XQwDktwqKWskB33St3JZ+rkKXxN6nyC3ZkMiTNEu1G/CQ5xUTAt40r0efKygOM\nzFoBl7H/lPU8bLgV3jjHcwT1\n-----END PRIVATE KEY-----\n",
+  "client_email": "usuario-bucket@idrl-videos-202410.iam.gserviceaccount.com",
+  "client_id": "101837689291768039172",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/usuario-bucket%40idrl-videos-202410.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

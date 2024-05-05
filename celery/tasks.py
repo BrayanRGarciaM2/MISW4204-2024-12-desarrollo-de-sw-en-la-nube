@@ -43,9 +43,6 @@ def edit_ratio(video):
     try:
         subprocess.run(['./adjust_video.sh', input_path, output_path, width, height])        
         os.replace(output_path, input_path)
-        fileName = obtener_nombre_archivo(input_path)
-        blob = bucket.blob(fileName)
-        blob.upload_from_filename(fileName)
     except subprocess.CalledProcessError as e:
         # Si hay un error, asegúrate de eliminar el archivo temporal
         if os.path.exists(output_path):
