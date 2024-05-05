@@ -1,3 +1,4 @@
+
 import os
 import subprocess
 import time
@@ -5,10 +6,15 @@ import uuid
 
 import pytube
 
-
+from google.cloud import storage
 from celery import Celery
 
 celery = Celery('tasks', backend='redis://redis:6379/0', broker='redis://redis:6379/0')
+
+client = storage.Client()
+bucket_name = 'videos-bucket-idrl'
+
+bucket = client.bucket(bucket_name)
 
 def generar_id_unico():
     """
@@ -19,6 +25,13 @@ def generar_id_unico():
     """
     return str(uuid.uuid4())
 
+def obtener_nombre_archivo(ruta):
+    # Dividir la ruta en el directorio y el nombre del archivo
+    directorio, nombre_archivo = os.path.split(ruta)
+    # Obtener solo el nombre del archivo con la extensión
+    nombre_archivo_con_extension = nombre_archivo.split("/")[-1]
+    return nombre_archivo_con_extension
+
 def edit_ratio(video):
     # Definir los parámetros
     input_path = video
@@ -28,8 +41,11 @@ def edit_ratio(video):
 
     # Llamar al script de shell desde Python
     try:
-        subprocess.run(['./adjust_video.sh', input_path, output_path, width, height])
+        subprocess.run(['./adjust_video.sh', input_path, output_path, width, height])        
         os.replace(output_path, input_path)
+        fileName = obtener_nombre_archivo(input_path)
+        blob = bucket.blob(fileName)
+        blob.upload_from_filename(fileName)
     except subprocess.CalledProcessError as e:
         # Si hay un error, asegúrate de eliminar el archivo temporal
         if os.path.exists(output_path):
@@ -40,6 +56,7 @@ def add_logo(video_path):
     # Definir los parámetros
     input_path = video_path
     output_path = f"/usr/src/app/videos/temporal.mp4"
+    output_path = "temporal.mp4"
     # Llamar al script de shell desde Python
     try:
         subprocess.run(['./add_image.sh', input_path, output_path])
@@ -50,32 +67,11 @@ def add_logo(video_path):
             os.remove(output_path)
         print("Error al recortar el video. No se han realizado cambios en el archivo original.")
 
-    # Definir rutas de archivos
-    # intro_image_path = "./assets/drl-logo.png"
-    #
-    # imagen = cv2.imread(intro_image_path)
-    #
-    # fps = 2
-    # ancho, alto = imagen.shape[:2]
-    #
-    # # Crear el objeto VideoWriter
-    # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    # video = cv2.VideoWriter('video.mp4', fourcc, fps, (ancho, alto))
-    #
-    # # Generar el video
-    # num_veces = 2
-    #
-    # for i in range(num_veces):
-    #     video.write(imagen)
-    #
-    # # Liberar los recursos
-    # video.release()
-
-
 def trim_video(video):
     # Definir los parámetros
     input_path = video
     output_path = f"/usr/src/app/videos/temporal.mp4"
+    output_path = "temporal.mp4"
     start_time = '00:00:00'
     duration = '20'
 
@@ -97,19 +93,26 @@ def editVideo(url):
     yt = pytube.YouTube(url)
 
     id_unico = generar_id_unico()
-
     video = yt.streams.get_lowest_resolution()
 
     ruta_completa = '/usr/src/app/videos'
     video_src = ruta_completa + '/' + id_unico + '.mp4'
     video.download(output_path=ruta_completa, filename=id_unico + '.mp4')
 
+    original_file_name = id_unico + '.mp4'
+
+    blob = bucket.blob(original_file_name)
+    blob.upload_from_filename(video)
+
     trim_video(video_src)
-    edit_ratio(video_src)
+    edit_ratio(video_src)   
 
+    edit_file_name = id_unico + '_Edited.mp4'
 
-    # if video_clip.duration > duracion_segundos:
-    #     video_recortado = video_clip.subclip(0, duracion_segundos)
-    #     video_recortado.write_videofile(ruta_completa + '/' + id_unico + '.mp4')
-    # else:
-    # video_clip.write_videofile(ruta_completa + '/' + id_unico + '.mp4')
+    blob = bucket.blob(edit_file_name)
+    blob.upload_from_filename(edit_file_name)
+    
+
+  
+
+    
