@@ -40,9 +40,6 @@ def edit_ratio(video):
     try:
         subprocess.run(['./adjust_video.sh', input_path, output_path, width, height])        
         os.replace(output_path, input_path)
-        fileName = obtener_nombre_archivo(input_path)
-        blob = bucket.blob(fileName)
-        blob.upload_from_filename(fileName)
     except subprocess.CalledProcessError as e:
         # Si hay un error, asegúrate de eliminar el archivo temporal
         if os.path.exists(output_path):
@@ -105,7 +102,7 @@ def editVideo(url):
         bucket = client.bucket(bucket_name)
 
         blob = bucket.blob(original_file_name)
-        blob.upload_from_filename(video)
+        blob.upload_from_filename(video_src)
 
         trim_video(video_src)
         edit_ratio(video_src)   
@@ -113,7 +110,7 @@ def editVideo(url):
         edit_file_name = id_unico + '_Edited.mp4'
 
         blob = bucket.blob(edit_file_name)
-        blob.upload_from_filename(edit_file_name)
+        blob.upload_from_filename(video_src)
 
     except DefaultCredentialsError as e:
         print("Error de autenticación: las credenciales predeterminadas son inválidas o no están configuradas correctamente.")
