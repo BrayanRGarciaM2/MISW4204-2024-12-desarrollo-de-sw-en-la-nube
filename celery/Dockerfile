@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y ffmpeg
 
 COPY . .
 
-RUN chmod +x /usr/src/celery/adjust_video.sh
-RUN chmod +x /usr/src/celery/trim_video.sh
+RUN chmod 777 /usr/src/celery/adjust_video.sh
+RUN chmod 777 /usr/src/celery/trim_video.sh
 
 COPY . .

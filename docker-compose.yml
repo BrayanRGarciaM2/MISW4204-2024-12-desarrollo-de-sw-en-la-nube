@@ -1,49 +1,21 @@
 version: "3.8"
    
 services:
-  web:
-    build: ./app
-    command: gunicorn --bind 0.0.0.0:5000 app:app
-    volumes:
-      - /usr/src/app
-    environment:
-      DB_HOST: "db"
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-      - redis
-    links:
-      - db
-      - redis
-    networks:
-      - default
-    env_file:
-      - ./.env.prod
-    restart: on-failure
-  db:
-    image: 'postgres:latest'
-    env_file:
-      - ./.env.prod.db
-    ports:
-      - "5432:5432"
-    networks:
-      - default
-  nginx:
-    build: ./nginx
-    ports:
-      - 1337:80
-    depends_on:
-      - web
   redis:
     image: 'redis'
     ports:
       - "6379:6379"
+    restart: always
   worker:
     build:
       context: ./celery
     command: celery -A tasks worker -l info -E
+    volumes:
+      - ./videos:/usr/src/app/videos/
     depends_on:
       - redis
+    restart: always
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/assets/idrl-videos-202410-88905e13ff46.json
   
   
