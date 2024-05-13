@@ -2,15 +2,28 @@ import os
 import subprocess
 import time
 import uuid
-
+import json
 import pytube
 
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import sessionmaker
 from google.cloud import storage
-from celery import Celery
+#from celery import Celery
 from google.auth.exceptions import DefaultCredentialsError
+from google.cloud import pubsub_v1
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, update
 
+#celery = Celery('tasks', backend='redis://redis:6379/0', broker='redis://redis:6379/0')
+db_url = "postgresql://postgres:123456@10.49.112.3:5432/videos"
+engine = create_engine(db_url)
 
-celery = Celery('tasks', backend='redis://redis:6379/0', broker='redis://redis:6379/0')
+metadata = MetaData()
+metadata.reflect(bind=engine)
+
+Tareas = metadata.tables["tareas"]
+
+Session = sessionmaker(bind=engine)
+session = Session()
 
 def generar_id_unico():
     """
@@ -51,7 +64,6 @@ def add_logo(video_path):
     os.chmod("/usr/src/celery/add_image.sh", 0o777)
     input_path = video_path
     output_path = f"/usr/src/app/videos/temporal.mp4"
-    output_path = "temporal.mp4"
     # Llamar al script de shell desde Python
     try:
         subprocess.run(['./add_image.sh', input_path, output_path])
@@ -81,11 +93,13 @@ def trim_video(video):
         print("Error al recortar el video. No se han realizado cambios en el archivo original.")
 
 
-@celery.task(name='tasks.edit')
-def editVideo(url):
+def editVideo(message):
+    data = json.loads(message.data.decode('utf-8'))
+    id_unico = data["id"]
+    url = data["url"]
+    message.ack()
     yt = pytube.YouTube(url)
 
-    id_unico = generar_id_unico()
     video = yt.streams.get_lowest_resolution()
 
     ruta_completa = '/usr/src/app/videos'
@@ -104,16 +118,46 @@ def editVideo(url):
         blob.upload_from_filename(video_src)
 
         trim_video(video_src)
-        edit_ratio(video_src)
+        #edit_ratio(video_src)
+        add_logo(video_src)
 
         edit_file_name = id_unico + '_Edited.mp4'
 
         blob = bucket.blob(edit_file_name)
         blob.upload_from_filename(video_src)
-
-        return "https://storage.cloud.google.com/videos-bucket-idrl/" + edit_file_name
+        print("id:", id_unico)
+        new_result = "https://storage.cloud.google.com/videos-bucket-idrl/" + edit_file_name
+        session.query(Tareas).filter(Tareas.c.id_task == id_unico).update({"status": "PROCESSED", "result": new_result})
+        session.commit()
+        session.close()
     except DefaultCredentialsError as e:
-        print("Error de autenticación: las credenciales predeterminadas son inválidas o no están configuradas correctamente.")
-    # Realizar acciones para solucionar el problema, como proporcionar nuevas credenciales
+        print("Error de autenticación: las credenciales predeterminadas son inválidas o no están configuradas correctamente.", e)
+        # Realizar acciones para solucionar el problema, como proporcionar nuevas credenciales
+    except SQLAlchemyError as e:
+        print("Ocurrió un error de SQLAlchemy:", e)
     except Exception as e:
         print("Se produjo un error durante la autenticación:", e)
+
+topic_name = 'projects/{project_id}/topics/{topic}'.format(
+    project_id="idrl-videos-202410",
+    topic='MyTopic',  # Set this to something appropriate.
+)
+
+subscription_name = 'projects/{project_id}/subscriptions/{sub}'.format(
+    project_id="idrl-videos-202410",
+    sub='MyNew-sub',  # Set this to something appropriate.
+)
+
+def callback(message):
+    data = json.loads(message.data.decode('utf-8'))
+    id_unico = data["id"]
+    url = data["url"]
+    print("Prueba del mensaje: ", id_unico)
+    message.ack()
+
+with pubsub_v1.SubscriberClient() as subscriber:
+    future = subscriber.subscribe(subscription_name, editVideo)
+    try:
+        future.result()
+    except KeyboardInterrupt:
+        future.cancel()
