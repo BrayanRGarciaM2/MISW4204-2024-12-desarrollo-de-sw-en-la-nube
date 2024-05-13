@@ -6,40 +6,42 @@ from modelos.modelos import Tareas, TareasSchema, db, StatusEnum
 from sqlalchemy import exc
 
 import asyncio
+import uuid
+import json
+from google.cloud import pubsub_v1
+#from celery import Celery
 
-from celery import Celery
-
-import asyncio
+#import asyncio
 
 tareas_schema = TareasSchema()
 
 
-celery = Celery('tasks', backend='redis://redis:6379/0', broker='redis://redis:6379/0')
+#celery = Celery('tasks', backend='redis://10.128.0.13/0', broker='redis://10.128.0.13/0')
 
-async def esperar(result):
-    while not result.ready():
-        await asyncio.sleep(1)
+topic_name = 'projects/{project_id}/topics/{topic}'.format(
+    project_id="idrl-videos-202410",
+    topic='MyTopic',  # Set this to something appropriate.
+)
 
-    if result.state == "SUCCESS":
-        tareas = Tareas.query.filter(Tareas.id_task == result.id).one_or_none()
-        tareas_schema.load({'status': "PROCESSED", 'result': result.result}, session=db.session, instance=tareas, partial=True)
-        db.session.commit()
-    else:
-        print("La tarea falló o está en un estado desconocido.")
-
-async def sendFile(filename):
+def sendFile(filename):
     try:
-        result = celery.send_task('tasks.edit', args=[filename])
-        tarea = tareas_schema.load({"id_task":result.id}, session=db.session)
+        id = str(uuid.uuid4())
+        tarea = tareas_schema.load({"id_task":id}, session=db.session)
         db.session.add(tarea)
         db.session.commit()
-        await asyncio.create_task(esperar(result))
+        publisher = pubsub_v1.PublisherClient()
+        data = {
+            'url': filename,
+            'id': id
+        }
+        future = publisher.publish(topic_name, data=json.dumps(data).encode('utf-8'))
+        result = future.result()
+        return tareas_schema.dump(tarea), 201
     except ValidationError as validation_error:
         return validation_error.messages, 400
     except exc.IntegrityError as e:
         db.session.rollback()
         return {'mensaje': 'Hubo un error creando la tarea. Revise los datos proporcionados'}, 400
-    return tareas_schema.dump(tarea), 201
 
 class VistaTareas(Resource):
 
@@ -64,4 +66,4 @@ class VistaTareas(Resource):
     @jwt_required()
     def post(self):
         filename = request.json['filename']
-        return asyncio.run(sendFile(filename))
+        return sendFile(filename)
