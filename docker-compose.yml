@@ -23,5 +23,14 @@ services:
     depends_on:
       - web
     restart: always
+  worker:
+    build:
+      context: ./celery
+    volumes:
+      - ./videos:/usr/src/app/videos/
+    command: python -u /usr/src/celery/tasks.py
+    restart: always
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/usr/src/celery/assets/idrl-videos-202410-88905e13ff46.json
   
   

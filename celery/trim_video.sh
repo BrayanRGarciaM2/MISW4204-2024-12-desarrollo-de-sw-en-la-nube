@@ -13,6 +13,6 @@ duration="$3"
 output_file="$4"
 
 # Ejecuta ffmpeg para recortar el video.
-ffmpeg -i "$input_file" -ss "$start_time" -t "$duration" -c copy "$output_file"
+ffmpeg -i "$input_file" -ss "$start_time" -t "$duration" -c:v copy -c:a copy "$output_file"
 
 echo "Video recortado guardado como $output_file"
