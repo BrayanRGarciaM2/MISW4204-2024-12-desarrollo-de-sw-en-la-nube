@@ -19,7 +19,7 @@ temp_list_file="file_list.txt"
 #    [temp][v:0] overlay=x=0:y=0:shortest=1:enable='gt(t,5)' [v]; \
 #    [0:a] asetpts=PTS+5/TB [a]" -map [v] -map [a] -preset veryfast "$final_video_path"
 
-ffmpeg -i "$image_file" -vf "scale=1280:720" logo_scaled.png
+ffmpeg -i "$image_file" -vf "scale=1280:720" -y logo_scaled.png
 
 ffmpeg -i "$input_file" -i logo_scaled.png -filter_complex \
 "[0:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[v0]; \

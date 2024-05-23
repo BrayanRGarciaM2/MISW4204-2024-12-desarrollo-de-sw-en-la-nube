@@ -59,11 +59,11 @@ def edit_ratio(video):
             os.remove(output_path)
         print("Error al recortar el video. No se han realizado cambios en el archivo original.")
 
-def add_logo(video_path):
+def add_logo(video_path, id):
     # Definir los parámetros
     os.chmod("/usr/src/celery/add_image.sh", 0o777)
     input_path = video_path
-    output_path = f"/usr/src/app/videos/temporal.mp4"
+    output_path = f"/usr/src/app/videos/{id}-temporal-add.mp4"
     # Llamar al script de shell desde Python
     try:
         subprocess.run(['./add_image.sh', input_path, output_path])
@@ -74,11 +74,11 @@ def add_logo(video_path):
             os.remove(output_path)
         print("Error al recortar el video. No se han realizado cambios en el archivo original.")
 
-def trim_video(video):
+def trim_video(video, id):
     # Definir los parámetros
     os.chmod("/usr/src/celery/trim_video.sh", 0o777)
     input_path = video
-    output_path = f"/usr/src/app/videos/temporal.mp4"
+    output_path = f"/usr/src/app/videos/{id}_temporal.mp4"
     start_time = '00:00:00'
     duration = '20'
 
@@ -117,9 +117,9 @@ def editVideo(message):
         blob = bucket.blob(original_file_name)
         blob.upload_from_filename(video_src)
 
-        trim_video(video_src)
+        trim_video(video_src, id_unico)
         #edit_ratio(video_src)
-        add_logo(video_src)
+        add_logo(video_src, id_unico)
 
         edit_file_name = id_unico + '_Edited.mp4'
 
