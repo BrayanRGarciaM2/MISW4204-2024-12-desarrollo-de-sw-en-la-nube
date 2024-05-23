@@ -9,4 +9,5 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "./app.py"]
+#CMD ["python", "./app.py"]
+CMD exec gunicorn --bind :5000 --workers 1 --threads 8 --timeout 0 app:app
