@@ -1,6 +1,7 @@
 FROM python:3.10
 
 ENV GOOGLE_APPLICATION_CREDENTIALS /usr/src/app/assets/idrl-videos-202410-88905e13ff46.json
+ENV DB_HOST "db"
 
 WORKDIR /usr/src/app
 
