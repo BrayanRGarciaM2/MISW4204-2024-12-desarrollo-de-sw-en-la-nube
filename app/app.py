@@ -12,7 +12,7 @@ from vistas.VistaTarea import VistaTarea
 
 def create_flask_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456@34.31.211.105:5432/videos'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456@?unix_socket=idrl-videos-202410:us-central1:db-videos/videos'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = 'frase-secreta'
     app.config['PROPAGATE_EXCEPTIONS'] = True
